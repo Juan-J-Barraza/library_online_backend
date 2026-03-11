@@ -47,6 +47,17 @@ func (h *LoginHandler) Login(c fiber.Ctx) error {
 		})
 	}
 
+	if req.Email == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "email es requerido",
+		})
+	}
+	if req.Password == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "la contraseña es requerida",
+		})
+	}
+
 	res, err := h.loginService.Login(req)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
