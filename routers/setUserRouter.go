@@ -12,7 +12,8 @@ import (
 
 func SetUserRouter(db *gorm.DB, apiv1 fiber.Router) {
 	userRepo := repository.NewUserRepository(db)
-	userService := services.NewUserService(userRepo)
+	paginationRepo := repository.NewPaginationRepository(db)
+	userService := services.NewUserService(userRepo, paginationRepo)
 	userHanlder := controllers.NewUserHandler(userService)
 
 	allowedRole := middleware.RoleMiddleware("ADMIN")

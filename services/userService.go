@@ -7,22 +7,30 @@ import (
 	"libraryOnline/dtos/request"
 	"libraryOnline/dtos/response"
 	"libraryOnline/repository"
+	"libraryOnline/utils"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {
-	repo *repository.UserRepository
+	repo          *repository.UserRepository
+	paginationRep *repository.PaginationRepository
 }
 
-func NewUserService(repo *repository.UserRepository) *UserService {
+func NewUserService(repo *repository.UserRepository,
+	paginationRep *repository.PaginationRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
-func (s *UserService) GetAll(f filters.FiltersUser) ([]response.UserResponse, error) {
-	users, err := s.repo.GetAll(f)
+func (s *UserService) GetAll(f filters.FiltersUser, pagination *utils.Pagination) (*utils.Pagination, error) {
+	query, users, err := s.repo.GetAll(f)
 	if err != nil {
 		return nil, fmt.Errorf("error to get users")
+	}
+
+	paginationResult, err := s.paginationRep.GetPaginatedResults(query, pagination, &users)
+	if err != nil {
+		return nil, fmt.Errorf("error to make pagination")
 	}
 
 	responseUser := []response.UserResponse{}
@@ -34,8 +42,9 @@ func (s *UserService) GetAll(f filters.FiltersUser) ([]response.UserResponse, er
 	if users == nil {
 		responseUser = []response.UserResponse{}
 	}
+	paginationResult.Data = responseUser
 
-	return responseUser, nil
+	return paginationResult, nil
 
 }
 
