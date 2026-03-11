@@ -6,7 +6,6 @@ import (
 	"libraryOnline/dtos/filters"
 	"libraryOnline/dtos/request"
 	"libraryOnline/dtos/response"
-	"libraryOnline/models"
 	"libraryOnline/repository"
 
 	"golang.org/x/crypto/bcrypt"
@@ -18,29 +17,6 @@ type UserService struct {
 
 func NewUserService(repo *repository.UserRepository) *UserService {
 	return &UserService{repo: repo}
-}
-
-func (s *UserService) Create(u *request.CreateOrUpdatedUserRequest) error {
-	existing, _ := s.repo.FindByEmail(u.Email)
-	if existing != nil {
-		return errors.New("email already in use")
-	}
-
-	hash, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return err
-	}
-	u.Password = string(hash)
-
-	if err := s.repo.Create(&models.User{
-		Name: u.Name, LastName: u.LastName,
-		Email: u.Email, Password: u.Password,
-		Role: u.Role,
-	}); err != nil {
-		return fmt.Errorf("error al crear el usuario")
-	}
-
-	return nil
 }
 
 func (s *UserService) GetAll(f filters.FiltersUser) ([]response.UserResponse, error) {
