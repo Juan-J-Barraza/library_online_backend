@@ -3,6 +3,7 @@ package controllers
 import (
 	"libraryOnline/dtos/request"
 	"libraryOnline/services"
+	"libraryOnline/utils/validators"
 
 	"github.com/gofiber/fiber/v3"
 )
@@ -20,6 +21,12 @@ func (h *LoginHandler) RegisterUser(c fiber.Ctx) error {
 	if err := c.Bind().Body(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "invalid body",
+		})
+	}
+	validator := validators.ValidatorUser(req)
+	if validator != "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": validator,
 		})
 	}
 
