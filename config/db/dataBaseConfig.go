@@ -10,8 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
 func SetDatabase() (*gorm.DB, error) {
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
@@ -33,7 +31,6 @@ func SetDatabase() (*gorm.DB, error) {
 		&models.Loand{},
 	)
 
-	DB = db
 	log.Println("Database is connected and migrated")
 
 	return db, nil

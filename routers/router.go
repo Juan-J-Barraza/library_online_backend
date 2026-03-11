@@ -10,4 +10,6 @@ func SetRouters(db *gorm.DB, app *fiber.App) {
 	apiV1 := app.Group("/api/v1")
 	SetHealthCheckRouter(apiV1)
 
+	SetUserRouter(db, apiV1)
+
 }
