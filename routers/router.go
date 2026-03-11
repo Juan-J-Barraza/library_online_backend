@@ -8,6 +8,7 @@ import (
 )
 
 func SetRouters(db *gorm.DB, app *fiber.App) {
+	app.Use(middleware.PaginationMiddleware)
 
 	apiV1 := app.Group("/api/v1")
 	SetHealthCheckRouter(apiV1)

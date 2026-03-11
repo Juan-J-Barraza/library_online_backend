@@ -19,7 +19,7 @@ func (r *UserRepository) Create(u *models.User) error {
 	return r.db.Create(u).Error
 }
 
-func (r *UserRepository) GetAll(filters filters.FiltersUser) ([]models.User, error) {
+func (r *UserRepository) GetAll(filters filters.FiltersUser) (*gorm.DB, []models.User, error) {
 	var users []models.User
 	query := r.db.Model(&models.User{})
 
@@ -34,7 +34,7 @@ func (r *UserRepository) GetAll(filters filters.FiltersUser) ([]models.User, err
 	}
 
 	err := query.Find(&users).Error
-	return users, err
+	return query, users, err
 }
 
 func (r *UserRepository) FindByEmail(email string) (*models.User, error) {

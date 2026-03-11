@@ -19,19 +19,21 @@ func NewUserHandler(service *services.UserService) *UserHandler {
 }
 
 func (h *UserHandler) GetAll(c fiber.Ctx) error {
+	pagination := c.Locals("pagination").(*utils.Pagination)
+
 	f := filters.FiltersUser{
 		Name:     c.Query("name"),
 		LastName: c.Query("last_name"),
 		Role:     c.Query("role"),
 	}
-	users, err := h.service.GetAll(f)
+	paginatedUsers, err := h.service.GetAll(f, pagination)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(users)
+	return c.Status(fiber.StatusOK).JSON(paginatedUsers)
 }
 
 func (h *UserHandler) FindByID(c fiber.Ctx) error {
