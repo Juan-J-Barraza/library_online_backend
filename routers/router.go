@@ -1,6 +1,8 @@
 package routers
 
 import (
+	"libraryOnline/middleware"
+
 	"github.com/gofiber/fiber/v3"
 	"gorm.io/gorm"
 )
@@ -9,7 +11,8 @@ func SetRouters(db *gorm.DB, app *fiber.App) {
 
 	apiV1 := app.Group("/api/v1")
 	SetHealthCheckRouter(apiV1)
+	SetLoginRouter(db, apiV1)
 
-	SetUserRouter(db, apiV1)
-
+	protected := apiV1.Use("/", middleware.AuthRequired())
+	SetUserRouter(db, protected)
 }
