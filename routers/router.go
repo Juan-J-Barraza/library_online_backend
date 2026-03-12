@@ -27,4 +27,5 @@ func SetRouters(db *gorm.DB, app *fiber.App) {
 	SetBooRouter(db, protected)
 	SetReservationRouter(db, protected)
 	SetLoanRouter(db, protected)
+	SetDashboardRouter(db, protected)
 }
