@@ -63,6 +63,17 @@ func (r *UserRepository) FindByID(id uint) (*models.User, error) {
 	return &user, nil
 }
 
+func (r *ReservationRepository) FindActiveByID(id uint) (*models.Loand, error) {
+	var loan models.Loand
+	err := r.db.
+		Preload("User").
+		Preload("Book").
+		Preload("Book.Editorial").
+		Preload("Book.Authors").
+		First(&loan, id).Error
+	return &loan, err
+}
+
 func (r *UserRepository) Update(u *models.User) error {
 	return r.db.Save(u).Error
 }
