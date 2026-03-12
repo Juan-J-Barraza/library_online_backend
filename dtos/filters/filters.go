@@ -5,3 +5,9 @@ type FiltersUser struct {
 	LastName string `json:"last_name"`
 	Role     string `json:"role"`
 }
+
+type FiltersBook struct {
+	Title       string `query:"title"`
+	EditorialId uint   `query:"editorial_id"`
+	AuthorId    uint   `query:"author_id"`
+}
