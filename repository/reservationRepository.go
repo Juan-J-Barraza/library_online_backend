@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"libraryOnline/dtos/filters"
 	"libraryOnline/models"
 	"time"
 
@@ -24,17 +25,29 @@ func (r *ReservationRepository) baseQuery() *gorm.DB {
 		Where("status = ?", "RESERVED")
 }
 
-func (r *ReservationRepository) GetAll() (*gorm.DB, []models.Loand, error) {
+func (r *ReservationRepository) GetAll(f filters.FilterReservation) (*gorm.DB, []models.Loand, error) {
 	var loans []models.Loand
 	query := r.baseQuery()
+	if f.BookName != "" {
+		query = query.
+			Joins("JOIN books ON books.id = loands.book_id").
+			Where("books.title ILIKE ?", "%"+f.BookName+"%")
+	}
+
 	err := query.Find(&loans).Error
 	return query, loans, err
 }
 
-func (r *ReservationRepository) GetByUserID(userID uint) (*gorm.DB, []models.Loand, error) {
+func (r *ReservationRepository) GetByUserID(userID uint, f filters.FilterReservation) (*gorm.DB, []models.Loand, error) {
 	query := r.baseQuery()
+	if f.BookName != "" {
+		query = query.
+			Joins("JOIN books ON books.id = loands.book_id").
+			Where("books.title ILIKE ?", "%"+f.BookName+"%")
+	}
+
 	var loans []models.Loand
-	err := query.Find(&loans).Where("user_id = ?", userID).Error
+	err := query.Where("user_id = ?", userID).Find(&loans).Error
 	return query, loans, err
 }
 

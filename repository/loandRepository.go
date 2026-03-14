@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"libraryOnline/dtos/filters"
 	"libraryOnline/models"
 
 	"gorm.io/gorm"
@@ -23,18 +24,35 @@ func (r *LoanRepository) baseQuery() *gorm.DB {
 		Where("status IN ?", []string{"ACTIVE", "RETURNED"})
 }
 
-func (r *LoanRepository) GetAll() (*gorm.DB, []models.Loand, error) {
+func (r *LoanRepository) GetAll(f filters.FilterLoan) (*gorm.DB, []models.Loand, error) {
 	query := r.baseQuery()
+	if f.BookName != "" {
+		query = query.
+			Joins("JOIN books ON books.id = loands.book_id").
+			Where("books.title ILIKE ?", "%"+f.BookName+"%")
+	}
+
 	var loands []models.Loand
 
 	err := query.Find(&loands).Error
 	return query, loands, err
 }
 
-func (r *LoanRepository) GetByUserID(userID uint) (*gorm.DB, []models.Loand, error) {
-	query := r.baseQuery()
+func (r *LoanRepository) GetByUserID(userID uint, f filters.FilterLoan) (*gorm.DB, []models.Loand, error) {
+	query := r.db.Model(&models.Loand{}).
+		Preload("User").
+		Preload("Book").
+		Preload("Book.Editorial").
+		Preload("Book.Authors").
+		Where("status = 'ACTIVE'")
+	if f.BookName != "" {
+		query = query.
+			Joins("JOIN books ON books.id = loands.book_id").
+			Where("books.title ILIKE ?", "%"+f.BookName+"%")
+	}
+
 	var loands []models.Loand
-	err := query.Where("user_id = ?", userID).Error
+	err := query.Where("user_id = ?", userID).Find(&loands).Error
 
 	return query, loands, err
 }

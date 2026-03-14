@@ -11,3 +11,11 @@ type FiltersBook struct {
 	EditorialId uint   `query:"editorial_id"`
 	AuthorId    uint   `query:"author_id"`
 }
+
+type FilterReservation struct {
+	BookName string `query:"book_name"`
+}
+
+type FilterLoan struct {
+	BookName string `query:"book_name"`
+}

@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"libraryOnline/dtos/filters"
 	"libraryOnline/dtos/request"
 	"libraryOnline/dtos/response"
 	"libraryOnline/models"
@@ -37,8 +38,8 @@ func NewLoanService(
 	}
 }
 
-func (s *LoanService) GetAll(p *utils.Pagination) (*utils.Pagination, error) {
-	query, loans, err := s.repo.GetAll()
+func (s *LoanService) GetAll(f filters.FilterLoan, p *utils.Pagination) (*utils.Pagination, error) {
+	query, loans, err := s.repo.GetAll(f)
 	if err != nil {
 		return nil, err
 	}
@@ -50,8 +51,8 @@ func (s *LoanService) GetAll(p *utils.Pagination) (*utils.Pagination, error) {
 	return result, nil
 }
 
-func (s *LoanService) GetByUserID(userID uint, p *utils.Pagination) (*utils.Pagination, error) {
-	query, loans, err := s.repo.GetByUserID(userID)
+func (s *LoanService) GetByUserID(userID uint, f filters.FilterLoan, p *utils.Pagination) (*utils.Pagination, error) {
+	query, loans, err := s.repo.GetByUserID(userID, f)
 	if err != nil {
 		return nil, err
 	}

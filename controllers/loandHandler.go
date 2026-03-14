@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"libraryOnline/dtos/filters"
 	"libraryOnline/dtos/request"
 	"libraryOnline/services"
 	"libraryOnline/utils"
@@ -21,14 +22,18 @@ func NewLoanHandler(service *services.LoanService) *LoanHandler {
 func (h *LoanHandler) GetAll(c fiber.Ctx) error {
 	claims := c.Locals("claims").(*utils.Claims)
 	p := c.Locals("pagination").(*utils.Pagination)
+	filter := filters.FilterLoan{BookName: c.Query("book_name")}
+	if filter.BookName == "" {
+		filter.BookName = c.Query("title")
+	}
 
 	var result *utils.Pagination
 	var err error
 
 	if claims.Role == "ADMIN" {
-		result, err = h.service.GetAll(p)
+		result, err = h.service.GetAll(filter, p)
 	} else {
-		result, err = h.service.GetByUserID(claims.UserID, p)
+		result, err = h.service.GetByUserID(claims.UserID, filter, p)
 	}
 
 	if err != nil {
