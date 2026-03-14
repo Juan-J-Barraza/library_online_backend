@@ -11,7 +11,7 @@ import (
 func SetRouters(db *gorm.DB, app *fiber.App) {
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"http://localhost:4200", "http://localhost:51022"},
-		AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "PATCH"},
 		AllowHeaders: []string{"Origin", "Content-Type", "Authorization"},
 	}))
 	app.Use(middleware.PaginationMiddleware)
@@ -19,6 +19,7 @@ func SetRouters(db *gorm.DB, app *fiber.App) {
 	apiV1 := app.Group("/api/v1")
 	SetHealthCheckRouter(apiV1)
 	SetLoginRouter(db, apiV1)
+	SetGalleryRouter(db, apiV1)
 
 	protected := apiV1.Use("/", middleware.AuthRequired())
 	SetUserRouter(db, protected)
