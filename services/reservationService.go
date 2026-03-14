@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"fmt"
+	"libraryOnline/dtos/filters"
 	"libraryOnline/dtos/request"
 	"libraryOnline/dtos/response"
 	"libraryOnline/models"
@@ -30,11 +31,11 @@ func NewReservationService(
 	userRepo *repository.UserRepository,
 	paginatetionRepo *repository.PaginationRepository,
 ) *ReservationService {
-	return &ReservationService{repo: repo, bookRepo: bookRepo, userRepo: userRepo}
+	return &ReservationService{repo: repo, bookRepo: bookRepo, userRepo: userRepo, paginatetionRepo: paginatetionRepo}
 }
 
-func (s *ReservationService) GetAll(p *utils.Pagination) (*utils.Pagination, error) {
-	query, loans, err := s.repo.GetAll()
+func (s *ReservationService) GetAll(f filters.FilterReservation, p *utils.Pagination) (*utils.Pagination, error) {
+	query, loans, err := s.repo.GetAll(f)
 	if err != nil {
 		return nil, err
 	}
@@ -46,8 +47,8 @@ func (s *ReservationService) GetAll(p *utils.Pagination) (*utils.Pagination, err
 	return result, nil
 }
 
-func (s *ReservationService) GetByUserID(userID uint, p *utils.Pagination) (*utils.Pagination, error) {
-	query, loans, err := s.repo.GetByUserID(userID)
+func (s *ReservationService) GetByUserID(userID uint, f filters.FilterReservation, p *utils.Pagination) (*utils.Pagination, error) {
+	query, loans, err := s.repo.GetByUserID(userID, f)
 	if err != nil {
 		return nil, err
 	}
