@@ -86,7 +86,7 @@ func (s *ReservationService) Create(req request.CreateReservationRequest, claims
 		return nil, err
 	}
 	if totalReserved+req.Quantity > MaxBooksPerUser {
-		return nil, fmt.Errorf("límite alcanzado: tienes %d/%d libros reservados o prestados", totalReserved, MaxBooksPerUser)
+		return nil, fmt.Errorf("límite alcanzado: tienes %d/%d libros reservados y/o prestados", totalReserved, MaxBooksPerUser)
 	}
 
 	// Verifica que el libro exista y tenga disponibilidad
